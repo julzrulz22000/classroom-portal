@@ -151,6 +151,8 @@ export default function App() {
   const [emailInput, setEmailInput] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
+const [passwordInput, setPasswordInput] = useState("");
+const [showPassword, setShowPassword] = useState(false);
 
   const [students, setStudents] = useState([]);
   const [files, setFiles] = useState([]);
@@ -200,7 +202,9 @@ export default function App() {
     setLoginError("");
 
     if (email === TEACHER_EMAIL) {
-      const u = { role: "teacher", email };
+  if (!showPassword) { setShowPassword(true); setLoginLoading(false); return; }
+  if (passwordInput !== "Georgia123") { setLoginError("Incorrect password."); setLoginLoading(false); return; }
+  const u = { role: "teacher", email };
       setUser(u);
       sessionStorage.setItem("classroom_user", JSON.stringify(u));
       setLoginLoading(false);
@@ -327,8 +331,13 @@ export default function App() {
           <div className="login-title">Welcome Back</div>
           <div className="login-sub">Enter your email to continue</div>
           <input className="login-input" type="email" placeholder="your@email.com"
-            value={emailInput} onChange={(e) => setEmailInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleLogin()} autoFocus />
+  value={emailInput} onChange={(e) => setEmailInput(e.target.value)}
+  onKeyDown={(e) => e.key === "Enter" && handleLogin()} autoFocus />
+{showPassword && (
+  <input className="login-input" type="password" placeholder="Password"
+    value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)}
+    onKeyDown={(e) => e.key === "Enter" && handleLogin()} style={{marginTop:10}} autoFocus />
+)}
           <button className="login-btn" onClick={handleLogin} disabled={loginLoading}>
             {loginLoading ? <><span className="spinner"></span> Checking…</> : "Continue →"}
           </button>
